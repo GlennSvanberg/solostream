@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Play, Pause, Volume2, VolumeX, SkipForward } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import {
   Popover,
@@ -143,6 +143,11 @@ const Index = () => {
     setCurrentIndex((i) => (i + 1) % episodes.length);
   }, [episodes.length]);
 
+  const goToPreviousEpisode = useCallback(() => {
+    if (episodes.length === 0) return;
+    setCurrentIndex((i) => (i - 1 + episodes.length) % episodes.length);
+  }, [episodes.length]);
+
   return (
     <div className="relative flex flex-col items-center justify-center h-full px-6 py-8 overflow-hidden selection:bg-accent/20">
       {/* Hidden audio element - must be in DOM for playback to work reliably */}
@@ -183,8 +188,8 @@ const Index = () => {
       </header>
 
       {/* Player */}
-      <main className="relative flex items-start gap-4 w-full max-w-md">
-        <div className="flex flex-col items-center gap-5 flex-1">
+      <main className="relative flex flex-col items-center w-full max-w-md">
+        <div className="flex flex-col items-center gap-5 w-full">
           {/* Waveform */}
           <WaveformVisualizer isPlaying={isPlaying} />
 
@@ -237,6 +242,26 @@ const Index = () => {
           />
         </div>
 
+        {/* Previous / Next Episode Buttons */}
+        {episodes.length > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-1">
+            <button
+              onClick={goToPreviousEpisode}
+              className="flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground/40 hover:text-muted-foreground/70 hover:bg-muted/30 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Previous episode"
+            >
+              <SkipBack className="w-4 h-4" strokeWidth={2} />
+            </button>
+            <button
+              onClick={goToNextEpisode}
+              className="flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground/40 hover:text-muted-foreground/70 hover:bg-muted/30 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label="Next episode"
+            >
+              <SkipForward className="w-4 h-4" strokeWidth={2} />
+            </button>
+          </div>
+        )}
+
           {/* Now Playing */}
           <section
             className={`flex flex-col items-center gap-2 pt-6 mt-2 w-full transition-all duration-700 ${isPlaying || currentEpisode ? "opacity-100 translate-y-0" : "opacity-30 translate-y-1"}`}
@@ -264,17 +289,6 @@ const Index = () => {
           )}
           </section>
         </div>
-        
-        {/* Next Episode Button */}
-        {episodes.length > 1 && (
-          <button
-            onClick={goToNextEpisode}
-            className="flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground/40 hover:text-muted-foreground/70 hover:bg-muted/30 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background mt-[36px]"
-            aria-label="Next episode"
-          >
-            <SkipForward className="w-4 h-4" strokeWidth={2} />
-          </button>
-        )}
       </main>
 
       {/* Footer */}
