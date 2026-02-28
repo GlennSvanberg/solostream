@@ -163,7 +163,7 @@ def plan_topics(context: str, covered: list[str], characters: list[dict]) -> lis
                         },
                         "narrative_brief": {
                             "type": "string",
-                            "description": "Narrative brief for scriptwriter. Content depth must match episode_type: short=brief punchy single insight; interview=Q&A structure medium depth; discussion=deep exploration multiple angles.",
+                            "description": "DETAILED narrative brief for scriptwriter. Must include concrete facts, examples, and talking points—not just structure. SHORT: 1–2 specific anchors the narrator can land on. INTERVIEW: 3–5 key questions or themes with concrete angles and at least 2–3 real-world examples or facts. DISCUSSION: 6–10+ specific talking points, concrete comparisons, named benchmarks/stats where relevant, real-world examples, and clear beats the hosts can build on. The scriptwriter must be able to generate a solid podcast from this alone—no invented content.",
                         },
                         "research_query": {
                             "type": "string",
@@ -207,16 +207,16 @@ def plan_topics(context: str, covered: list[str], characters: list[dict]) -> lis
 
     instructions = """You are a producer for Solostream—a personal AI radio station that turns daily notes into narrated audio reflections.
 
-Given user context (notes, fragments, ideas), topics already covered, and the available characters, propose 1–5 NEW episode topics. Each topic must:
+Given user context (notes, fragments, ideas), topics already covered, and the available characters, propose 1–2 NEW episode topics. Quality over quantity—each topic must be rich enough for a scriptwriter to generate a solid podcast with real points and facts.
 
 EPISODE TYPES (pick one per topic):
-- short (2–3 min): Solo format. One person, one sharp insight or observation. Brief, punchy, focused. No deep exploration. Content: a single idea that can be delivered in 2–3 minutes.
-- interview (5–7 min): Host + guest. Q&A structure. Medium depth. One topic explored through questions and responses. Content: one theme with room for back-and-forth.
-- discussion (15–25 min): Two hosts. Deep dive. Multiple angles, building on each other. Content: rich enough for sustained exploration, nuance, and reflection.
+- short (2–3 min): Solo format. One person, one sharp insight. Include 1–2 concrete anchors (specific example, quote, or observation) the narrator can land on.
+- interview (5–7 min): Host + guest. Include 3–5 key questions or themes with concrete angles, plus 2–3 real-world examples or facts to weave in.
+- discussion (15–25 min): Two hosts. Deep dive. Include 6–10+ specific talking points: concrete comparisons, named benchmarks or stats where relevant, real-world examples, and clear beats the hosts can build on. The brief must read like a producer's fact sheet—not a vague outline.
 
 RULES:
 - Be distinct from already-covered topics
-- narrative_brief content depth MUST match episode_type (short=brief, interview=medium, discussion=deep)
+- narrative_brief MUST be detailed and specific. Include concrete facts, examples, stats, or named references where the topic warrants them. The scriptwriter should not have to invent content.
 - Follow Solostream tone: thoughtful, human, not therapy/coaching/hype
 - Optionally include research_query for 1 external signal. Use empty string if not needed.
 - host_selection must match episode_type: short=solo (1 host), interview=host+guest, discussion=2 hosts. Use character ids exactly as listed.

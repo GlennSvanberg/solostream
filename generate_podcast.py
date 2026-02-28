@@ -7,6 +7,9 @@ ElevenLabs Text to Dialogue API for multi-voice audio output.
 
 Run with: python generate_podcast.py
           python generate_podcast.py --topic-file topics/2025-02-28-scattered-day.md
+
+With --topic-file: saves to episodes/{topic-filename}.txt and .mp3 (no overwrite).
+Without: uses podcast_script.txt and podcast_output.mp3.
 Requires: OPENAI_API_KEY (if SEND_TO_OPENAI), ELEVENLABS_API_KEY (if SEND_TO_ELEVENLABS).
 Keys can be in .env or environment variables.
 """
@@ -54,12 +57,16 @@ SEND_TO_ELEVENLABS = True
 OUTPUT_SCRIPT_PATH = "podcast_script.txt"
 OUTPUT_AUDIO_PATH = "podcast_output.mp3"
 OUTPUT_AUDIO_POSTPROCESSED_PATH = "podcast_output_postprocessed.mp3"
+EPISODES_DIR = "episodes"
 
 # If True, add light studio polish (room tone + reverb) after ElevenLabs. Saves to OUTPUT_AUDIO_POSTPROCESSED_PATH.
 APPLY_POSTPROCESSING = True
 
 # ElevenLabs TTD stability: 0.0=Creative (most expressive), 0.5=Natural, 1.0=Robust (only 0.0,0,5 and 1.0 are allowed values)
 ELEVENLABS_STABILITY = 0.0
+
+# ElevenLabs Text-to-Dialogue API limit (chars). Scripts exceeding this are chunked and concatenated.
+ELEVENLABS_MAX_CHARS = 5000
 
 # =============================================================================
 # END CONFIG
@@ -172,6 +179,17 @@ def load_topic_from_file(path: str) -> dict:
     else:
         result["narrative_brief"] = body.strip()
 
+    # Extract external signals (optional section written by planner research)
+    ext_match = re.search(
+        r"^#\s*External\s+signals\s*\(optional\)\s*$(.+?)(?=^#\s|\Z)",
+        body,
+        re.MULTILINE | re.DOTALL | re.IGNORECASE,
+    )
+    if ext_match:
+        result["external_signals"] = ext_match.group(1).strip()
+    else:
+        result["external_signals"] = ""
+
     return result
 
 
@@ -189,6 +207,9 @@ def generate_script(
     content = ""
     if topic_data and topic_data.get("narrative_brief"):
         content = topic_data["narrative_brief"].strip()
+        external = topic_data.get("external_signals", "").strip()
+        if external:
+            content = content + "\n\n# Facts and external signals to weave in:\n" + external
     elif topic is not None:
         content = topic.strip()
     else:
@@ -371,27 +392,78 @@ def parse_script(script: str, speaker_to_voice: dict[str, str] | None = None) ->
     return inputs_list
 
 
-def send_to_elevenlabs(inputs: list[dict]) -> None:
-    """Call ElevenLabs Text to Dialogue API and save audio to OUTPUT_AUDIO_PATH."""
+def _chunk_inputs(inputs: list[dict], max_chars: int) -> list[list[dict]]:
+    """Split inputs into chunks of <= max_chars. Never splits a segment mid-text."""
+    chunks: list[list[dict]] = []
+    current: list[dict] = []
+    current_len = 0
+
+    for seg in inputs:
+        seg_len = len(seg["text"])
+        if seg_len > max_chars:
+            raise ValueError(
+                f"Segment has {seg_len} chars (max {max_chars}). "
+                "Split long dialogue lines in the script."
+            )
+        if current_len + seg_len > max_chars and current:
+            chunks.append(current)
+            current = []
+            current_len = 0
+        current.append(seg)
+        current_len += seg_len
+
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def send_to_elevenlabs(inputs: list[dict], output_path: str | None = None) -> None:
+    """Call ElevenLabs Text to Dialogue API and save audio to output_path or OUTPUT_AUDIO_PATH.
+    Chunks long scripts to stay under ELEVENLABS_MAX_CHARS, then concatenates audio."""
     from elevenlabs import ElevenLabs, ModelSettingsResponseModel
+    from pydub import AudioSegment
 
     if not os.environ.get("ELEVENLABS_API_KEY"):
         raise ValueError("ELEVENLABS_API_KEY environment variable is required for ElevenLabs")
 
+    path = output_path or OUTPUT_AUDIO_PATH
     client = ElevenLabs()
 
-    audio = client.text_to_dialogue.convert(
-        inputs=inputs,
-        model_id="eleven_v3",
-        output_format="mp3_44100_128",
-        settings=ModelSettingsResponseModel(stability=ELEVENLABS_STABILITY),
-    )
+    chunks = _chunk_inputs(inputs, ELEVENLABS_MAX_CHARS)
+    temp_files: list[str] = []
 
-    with open(OUTPUT_AUDIO_PATH, "wb") as f:
-        for chunk in audio:
-            f.write(chunk)
+    try:
+        for i, chunk in enumerate(chunks):
+            temp_path = path + f".chunk{i}" if len(chunks) > 1 else path
+            if len(chunks) > 1:
+                temp_files.append(temp_path)
 
-    print(f"Audio saved to {OUTPUT_AUDIO_PATH}")
+            audio = client.text_to_dialogue.convert(
+                inputs=chunk,
+                model_id="eleven_v3",
+                output_format="mp3_44100_128",
+                settings=ModelSettingsResponseModel(stability=ELEVENLABS_STABILITY),
+            )
+
+            with open(temp_path, "wb") as f:
+                for c in audio:
+                    f.write(c)
+
+        if len(chunks) > 1:
+            combined = AudioSegment.empty()
+            for tf in temp_files:
+                combined += AudioSegment.from_mp3(tf)
+            combined.export(path, format="mp3", bitrate="128k")
+            for tf in temp_files:
+                os.remove(tf)
+            print(f"Audio saved to {path} ({len(chunks)} chunks concatenated)")
+        else:
+            print(f"Audio saved to {path}")
+    except Exception:
+        for tf in temp_files:
+            if os.path.exists(tf):
+                os.remove(tf)
+        raise
 
 
 def apply_studio_polish(input_path: str, output_path: str) -> None:
@@ -422,11 +494,24 @@ def main() -> None:
     topic_data: dict | None = None
     speaker_to_voice: dict[str, str] | None = None
 
+    script_path = OUTPUT_SCRIPT_PATH
+    audio_path = OUTPUT_AUDIO_PATH
+    postprocessed_path = OUTPUT_AUDIO_POSTPROCESSED_PATH
+
     if args.topic_file:
         topic_data = load_topic_from_file(args.topic_file)
         ep = topic_data.get("episode_type", "interview")
         d_min, d_max = topic_data.get("duration_min", 5), topic_data.get("duration_max", 7)
         print(f"Loaded topic from {args.topic_file} ({ep} {d_min}-{d_max} min)")
+
+        # Use topic filename (without extension) as episode name; save to episodes/
+        episode_name = Path(args.topic_file).stem
+        episodes_dir = SCRIPT_DIR / EPISODES_DIR
+        episodes_dir.mkdir(parents=True, exist_ok=True)
+        script_path = str(episodes_dir / f"{episode_name}.txt")
+        audio_path = str(episodes_dir / f"{episode_name}.mp3")
+        postprocessed_path = str(episodes_dir / f"{episode_name}_postprocessed.mp3")
+        print(f"  Episode output: episodes/{episode_name}.*")
 
         # Load characters and build character_list + speaker_to_voice
         characters = load_characters(CHARACTERS_PATH)
@@ -461,12 +546,12 @@ def main() -> None:
     if SEND_TO_OPENAI or topic_data is not None:
         print("Generating podcast script with OpenAI...")
         script = generate_script(topic_data=topic_data)
-        with open(OUTPUT_SCRIPT_PATH, "w", encoding="utf-8") as f:
+        with open(script_path, "w", encoding="utf-8") as f:
             f.write(script)
-        print(f"Script saved to {OUTPUT_SCRIPT_PATH}")
+        print(f"Script saved to {script_path}")
     else:
-        print(f"Loading existing script from {OUTPUT_SCRIPT_PATH}...")
-        with open(OUTPUT_SCRIPT_PATH, "r", encoding="utf-8") as f:
+        print(f"Loading existing script from {script_path}...")
+        with open(script_path, "r", encoding="utf-8") as f:
             script = f.read()
 
     inputs = parse_script(script, speaker_to_voice=speaker_to_voice)
@@ -474,11 +559,11 @@ def main() -> None:
 
     if SEND_TO_ELEVENLABS:
         print("Sending to ElevenLabs...")
-        send_to_elevenlabs(inputs)
+        send_to_elevenlabs(inputs, output_path=audio_path)
 
         if APPLY_POSTPROCESSING:
             print("Applying post-processing...")
-            apply_studio_polish(OUTPUT_AUDIO_PATH, OUTPUT_AUDIO_POSTPROCESSED_PATH)
+            apply_studio_polish(audio_path, postprocessed_path)
     else:
         print("SEND_TO_ELEVENLABS is False. Set to True to generate audio.")
 

@@ -1,0 +1,67 @@
+Sarah: [casual] Today on Solostream we are mapping the voice generation landscape into something you can actually use a stack capture then synthesis then editing then deployment and then we are going to talk about the new powers and the risks without getting dreamy about it Nina is here Nina when someone says AI voice what do they usually mean
+
+Nina: [thoughtful] It is a bucket term and it hides a few different technologies text to speech is the obvious one you type words you get audio then voice conversion is taking an existing recording and changing the voice while keeping timing and performance cloning is usually building a custom voice model from samples dubbing and translation is the workflow layer that takes a video and outputs new language audio ideally with timing and sometimes lip sync and then full voice agents are the interactive systems that listen decide speak and keep a conversation going
+
+Sarah: [thoughtful] Can you anchor that with examples that are actually common
+
+Nina: [casual] Sure audiobook style narration is mostly TTS these days sometimes with a commissioned synthetic voice customer support IVR and call routing is TTS and sometimes agentic voice podcast intros ads and midrolls are often TTS or cloning for consistency multilingual product videos are dubbing workflows with a translation step and then full voice agents show up in support lines sales qualification and internal help desks where the voice is the interface not just the output
+
+Sarah: [pause] Okay so if we turn this into a stack start with capture
+
+Nina: [thoughtful] Capture is two things audio and text audio capture means clean recordings if you are cloning a voice you want controlled samples no background noise consistent mic ideally a few minutes at least and you want explicit consent and a contract if it is a performer text capture is transcription the Whisper family of tools is the reference point here because you get timestamps speaker separation and a draft script you can edit which then feeds synthesis
+
+Sarah: [casual] Then synthesis the fun part
+
+Nina: [thoughtful] Synthesis is where the recognizable vendors sit high quality TTS and voice libraries include ElevenLabs OpenAI TTS Google Cloud Text to Speech Amazon Polly Microsoft Azure Neural TTS those are widely referenced because they have usable voices and APIs and controls then you have voice conversion and cloning features often in the same platforms and then dubbing products positioned for localization including ElevenLabs dubbing and similar platforms that wrap translation plus timing plus voice choice
+
+Sarah: [thoughtful] Editing is where most people underestimate the work right
+
+Nina: [sighing] Yes because audio is emotional and picky editing and cleanup is where Descript is common for podcast style editing because you can edit by editing text and it regenerates the audio Adobe Audition is a classic DAW reference for people who want surgical control and transcription again sits here because once you have text aligned to audio you can find every uh every misread every brand name mistake fast
+
+Sarah: [casual] Then deployment which sounds boring but is where things break
+
+Nina: [thoughtful] Deployment is API integration batch jobs asset management and monitoring it is putting the voice into your app into your IVR into your video pipeline or into a content schedule and it is also governance who can generate what voice where are the logs what is the latency what happens when the model changes and your brand voice drifts
+
+Sarah: [thoughtful] I want to pause on quality because people argue in vibes but there is also benchmarking now right
+
+Nina: [thoughtful] There is a new benchmark called EmergentTTS Eval that people are citing and it suggests a split that matches what practitioners feel ElevenLabs often wins in emotional prosody so that sense of feeling and performance while OpenAI GPT 4o mini TTS can outperform it on nuanced pronunciation accuracy and expressiveness even though it still trails in raw prosody scores that is not a forever ranking but it is a useful signal that you may choose differently depending on whether your pain is flatness or mispronounced names
+
+Sarah: [pause] And latency is a whole other axis
+
+Nina: [thoughtful] Yes there is research from VoXtream on streaming TTS where speech starts from the first word around 102 milliseconds which undercuts the roughly 400 millisecond figure people quote for ElevenLabs and it is a clean contrast immediacy versus artistry if you are building a live agent that 300 milliseconds feels like a person hesitating
+
+Sarah: [casual] I want you to do a verbal demo for listeners A B the same paragraph generic voice versus custom voice what changes when you listen closely
+
+Nina: [drawn out] So imagine a paragraph like Welcome back this is your weekly product update today we shipped offline mode fixed the calendar sync and added support for SSO now generic voice tends to be evenly paced it hits commas like a metronome it often over pronounces product words and under performs emphasis like offline mode it can also have sibilance on words like shipped and SSO the custom voice if it is trained well will breathe in slightly before the first sentence it will compress filler words it will lean on offline mode like it matters and it will smooth the S sounds so it is less hissy and it will also handle your internal rhythm like you are speaking to your own users not reading a script
+
+Sarah: [thoughtful] And the failure modes show up fast too
+
+Nina: [casual] Yes the custom voice can also expose quirks it might have too much breathiness it might sound tired if the stability settings are off it might insert micro pauses that feel like uncertainty and the generic voice will mispronounce names less often sometimes because it is trained on broad corpora and the custom voice has narrower exposure
+
+Sarah: [thoughtful] Give us the second demo pronunciation edge cases the kind that break trust
+
+Nina: [thoughtful] A classic is company names and acronyms say your company is Qntx and the product is HelioOS and you mention Ngũgĩ wa Thiong'o in a reading without controls the system might say quint ex or cue en tee ex and Helios and it might flatten the name entirely and that can sound disrespectful SSML helps because you can specify say as characters for acronyms or phoneme hints and pronunciation dictionaries help because you can set Qntx to be said as quantics every time and you can store multilingual pronunciations per language so your Spanish dub does not inherit the English phoneme set
+
+Sarah: [casual] Okay new powers specifically not abstract what does this unlock for teams
+
+Nina: [thoughtful] Rapid iteration is real you can generate three reads serious playful short without re recording localization at scale you can ship the same script in multiple languages with consistent cadence accessibility you can turn internal docs newsletters and policies into audio and then the Solostream idea personal radio you can turn your notes into narrated reflections that you can actually listen to while walking
+
+Sarah: [thoughtful] Give me mini stories I can picture
+
+Nina: [casual] Small team weekly product updates in five languages they write one script run TTS for English then dubbing workflows for Spanish French German Japanese they keep the same pacing and music bed and they review only the pronunciation diff list the consultancy story is after a workshop they produce a client ready audio memo two minutes long the lead consultant dictates notes transcription cleans it up Descript edits it like text and then they render in a consistent branded voice the educator story is lesson notes into short audio summaries for students with commute time they generate a 90 second recap per lesson and they track completion in their LMS because audio is easier to consume than a PDF
+
+Sarah: [pause] Now the catch rights consent trust what do you want people to be slightly uncomfortable about
+
+Nina: [sighing] The voice is identity adjacent so consent is not a nice to have if you are cloning a voice you need explicit permission and clear labeling when a synthetic voice is used especially externally data handling matters where are the samples stored where are transcripts stored what is the retention policy can an employee delete their voice sample brand risk is real because deepfakes are now part of public misinformation concerns and many platforms and jurisdictions are moving toward disclosure norms so you need verification steps internally like watermarking where available signed release forms and a rule that no one can generate the CEOs voice without approvals
+
+Sarah: [thoughtful] How do you choose a tool for real deployment give me the checklist and then a simple decision tree prototype to production
+
+Nina: [thoughtful] Checklist quality natural prosody pronunciation controls like SSML emotion and stability operations API availability latency streaming versus batch uptime pricing and quotas governance admin controls audit logs user permissions and legal licensing terms for commercial use and voice actor agreements if you commissioned a voice decision tree prototype pick one vendor generate five samples measure listener retention and collect mispronunciations pilot integrate via API add a pronunciation dictionary add human review steps and document consent production lock versions monitor drift set SLAs keep audit logs and define incident response for misuse
+
+Sarah: [casual] Last question if someone listening wants to try something this week without making it weird what should they do
+
+Nina: [thoughtful] Take a 200 word memo something you already wrote generate it in three voices a generic library voice a more expressive voice and if you have permission a custom branded voice then send it to five people and measure what they actually listen to all the way through and note every moment they cringe or rewind that gives you your real requirements faster than opinions
+
+Sarah: [thoughtful] That is the right kind of experiment small measurable and honest about tradeoffs capture synthesis editing deployment then governance around it Nina thank you
+
+Nina: [casual] Thanks Sarah
