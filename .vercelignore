@@ -5,5 +5,4 @@ __pycache__/
 episodes/
 topics/
 input/
-scripts/
 .env
