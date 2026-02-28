@@ -1,0 +1,201 @@
+Nina: [casual] Today we got a note that basically says okay but which model is better Opus 4.6 or gpt 5.3 codex and I want to start by gently refusing the brand war version of that question  
+Daniel: [thoughtful] Yeah because better at what and better for whom and better under which constraints  
+Nina: [thoughtful] Exactly so let us turn it into fit for purpose and the purpose usually falls into two buckets creative reasoning and narrative work like writing synthesis planning and then code generation and refactoring work like tests diffs repo navigation and debugging  
+Daniel: [casual] And sometimes people think they are choosing a model but they are actually choosing a workflow like do I want a model that helps me think in paragraphs or a model that behaves like a fast deterministic code assistant  
+Nina: [thoughtful] The listener asked Opus 4.6 versus gpt 5.3 codex so we will use that as the inciting question but we are going to treat it like a field guide you can run the same day  
+Daniel: [pause] Also we need to be honest about what we know and what we do not know we can talk about market positioning and observed patterns and you can test in your own environment  
+Nina: [casual] Right and there is at least one public writeup making the rounds that says recent head to head testing shows Opus 4.6 excels in long context and agentic reliability helped by a very large context window and that gpt 5.3 codex shines in traditional code generation speed and JSON friendly output structure  
+Daniel: [thoughtful] And even if you take that as a signal not a law it already suggests how to evaluate not by vibes but by axes  
+Nina: [thoughtful] So let us define the axes first then we will give you a bake off methodology and then we will end with a decision matrix you can keep in your notes  
+Daniel: [casual] I like four axes here instruction following and format reliability depth versus speed tool use and code context handling and then safety or robustness under ambiguity  
+Nina: [thoughtful] Let us unpack axis one instruction following and format reliability because people underrate this until they are doing structured work  
+Daniel: [casual] Yeah like the boring stuff that becomes the whole game when you want a model to emit valid JSON that matches a schema every single time  
+Nina: [thoughtful] Or preserve constraints like do not exceed 140 characters or keep these headings unchanged or include exactly these keys and no extras  
+Daniel: [pause] Or in code land do not rename public functions do not change behavior keep backward compatibility preserve the signature and output formatting  
+Nina: [thoughtful] A concrete test for this axis is ask for strict schema output and then see how often you can paste it directly into a parser without hand edits  
+Daniel: [casual] And you score it like did it compile did it parse did it run  
+Nina: [thoughtful] Axis two depth versus speed tradeoff and I want to phrase it like how well does it earn its certainty  
+Daniel: [pause] Yeah does it ask clarifying questions when it should does it surface assumptions does it say I do not know when it does not know or does it confidently invent specifics  
+Nina: [thoughtful] This is where long context and reasoning can matter because a model can hold more of your messy inputs and build a cleaner frame  
+Daniel: [casual] But there is a cost side and a latency side and sometimes you need the fast answer that is 80 percent right and you will correct the rest  
+Nina: [thoughtful] Axis three tool use and code context handling so this is ability to work with multi file repos propose diffs reason about tests and make incremental changes without breaking everything  
+Daniel: [thoughtful] And honestly this is where model plus interface matters like do you have a repo aware tool do you have file search do you have test runner integration because the same model can look smarter when it has better context plumbing  
+Nina: [pause] Still you can evaluate with a simulated repo prompt too like you paste a few files and ask for a minimal diff and a regression test  
+Daniel: [thoughtful] Axis four safety and robustness under ambiguity what happens when your prompt is under specified does it freeze does it ramble does it produce a plausible but wrong plan does it ask the one question that would have prevented rework  
+Nina: [casual] I think of this as the rework tax axis  
+Daniel: [thoughtful] Yeah rework is where the costs hide not just the API price  
+Nina: [pause] Now before we go into methodology I want to say something that sounds obvious but is not practiced you should evaluate models on the tasks you actually do repeatedly  
+Daniel: [casual] Not on a viral prompt you saw once  
+Nina: [thoughtful] Exactly and you also should not only test the output quality you test time to useful  
+Daniel: [pause] Time to useful is the minute your output can be used without a human doing major repair  
+Nina: [thoughtful] So here is a bake off you can copy you run the same five prompts in both models and you keep them representative and you score them  
+Daniel: [casual] And you do it with a little discipline like same temperature settings if you can control that same system prompt if you use one same tools enabled if possible  
+Nina: [thoughtful] Five prompts and they should cover both writing and code and structured output  
+Daniel: [casual] Prompt one write a spec from messy notes  
+Nina: [thoughtful] The notes should be real like a paragraph of half formed requirements a couple constraints and some open questions  
+Daniel: [pause] And your target output is something like a one page spec with sections goals non goals user stories requirements data model edge cases and a test plan outline  
+Nina: [thoughtful] Prompt two generate unit tests from a function signature  
+Daniel: [casual] Like here is a function signature and docstring and maybe two example inputs and outputs now write tests in pytest or jest including edge cases  
+Nina: [thoughtful] Prompt three refactor code while preserving behavior  
+Daniel: [pause] That means you provide a chunk of code that is messy but correct and you ask for refactor into smaller functions with the same output and add tests to ensure behavior stays the same  
+Nina: [thoughtful] Prompt four summarize and extract action items from a meeting transcript  
+Daniel: [casual] And not just summary like action items with owner and due date if mentioned plus decisions and open questions  
+Nina: [thoughtful] Prompt five produce structured output with a strict schema  
+Daniel: [pause] Like output valid JSON matching this JSON schema do not include commentary and then you give a schema for say a decision log or a project brief  
+Nina: [thoughtful] Now scoring rubric out of five and you score each prompt on correctness completeness formatting and time to useful  
+Daniel: [casual] So each task yields four sub scores 1 to 5 and you can also do a weighted total  
+Nina: [pause] Let us define those quickly correctness means factually correct relative to input and for code it means tests pass and code compiles  
+Daniel: [thoughtful] Completeness means did it cover the required sections and edge cases did it miss obvious failure modes  
+Nina: [casual] Formatting means did it obey your exact requested format valid JSON exact headings no extra keys proper markdown tables if requested  
+Daniel: [thoughtful] Time to useful is subjective but you can time it like how many minutes did you spend editing until you could ship it or run it  
+Nina: [casual] And you can also track response time in seconds just as a raw latency metric  
+Daniel: [pause] Now let us talk concrete coding benchmarks without making up performance claims because that gets weird fast  
+Nina: [thoughtful] Use well known public task styles like HumanEval type prompts in Python where you define a function and ask it to implement it and include a few tests  
+Daniel: [casual] Or simpler write tests for a small function where the logic is tricky like date parsing or string normalization and see if it catches edge cases  
+Nina: [thoughtful] Another good one is explain this stack trace because real world debugging is often stack trace plus a small code snippet not a full greenfield prompt  
+Daniel: [pause] And the trick is you are not trying to declare a universal winner you are trying to see which model produces less rework for your specific style  
+Nina: [thoughtful] Let us give a practical repo scenario because that is where codex positioned models often shine  
+Daniel: [casual] Scenario you have a TypeScript Express API with failing tests identify which file likely contains the bug propose a minimal diff add a regression test  
+Nina: [thoughtful] And you can set this up even without a full repo tool by pasting three files the failing test output and the relevant route handler and maybe the service layer  
+Daniel: [pause] Your scoring there is simple did it identify the right file did it propose a diff that actually addresses the failing assertion and did the new regression test fail before the fix and pass after  
+Nina: [thoughtful] And pay attention to whether the model proposes a minimal diff or tries to rewrite the world because minimal diffs are a form of respect for constraints  
+Daniel: [casual] Also watch for whether it asks for the missing piece like can you paste the failing test output or the exact stack trace because that is the depth versus speed axis again  
+Nina: [thoughtful] Now concrete non coding benchmarks because a lot of people do not realize their week is mostly communication and decisions  
+Daniel: [casual] Benchmark one turn twelve bullet notes into a one page client memo with risks recommendation and open questions  
+Nina: [thoughtful] The notes should be messy like budget constraints half sentences conflicting stakeholder preferences timeline pressure and then see if the model can transform it into calm client language  
+Daniel: [pause] And also see if it preserves uncertainty like if the notes say not sure about legal signoff does the memo keep that as a risk or does it just assume it is fine  
+Nina: [thoughtful] Benchmark two extract a decision log decision alternatives rationale next steps  
+Daniel: [casual] This is where format reliability matters because if you always want a decision log in the same structure you want a model that does not improvise the schema  
+Nina: [thoughtful] Now model specialization intuition but we have to say it carefully  
+Daniel: [pause] A codex branded model is typically positioned for code workflows that means it is optimized in product design and training focus for code generation refactoring diffs tests and structured outputs like JSON  
+Nina: [thoughtful] Whereas a general model is often better for synthesis prose and long context reasoning just because that is what people use it for and what it is marketed to excel at  
+Daniel: [casual] But none of this is guaranteed and models change and prompting matters and tool setup matters  
+Nina: [thoughtful] Which is why we are giving you the bake off methodology rather than a verdict  
+Daniel: [pause] Let us bring in cost latency and context window because this is where decisions get real  
+Nina: [casual] Here is a concrete way to compare measure average response time across ten runs for the same prompt set track tokens in and out compute cost per successful task  
+Daniel: [thoughtful] Cost per successful task is the key because a cheap model that forces you into three retries plus ten minutes of edits is not cheap  
+Nina: [pause] And context window is not just a brag number it changes what tasks are possible like multi doc synthesis or holding an entire policy plus a contract plus meeting notes  
+Daniel: [thoughtful] This is where long context tasks can flip the winner even if short prompts favor another model  
+Nina: [casual] Because if model A can take the whole corpus and model B forces you to truncate or summarize first you are adding a pre processing step that can introduce errors  
+Daniel: [pause] And that pre processing step is also time and cost  
+Nina: [thoughtful] Now prompt portability test this one is so revealing  
+Daniel: [casual] Take one prompt that works great in model A run unchanged in model B and note failure modes  
+Nina: [thoughtful] If it falls apart your workflow is brittle meaning you have a prompt that is secretly tuned to one model quirks  
+Daniel: [pause] And brittle workflows create hidden switching costs  
+Nina: [thoughtful] So do this test with your highest leverage prompt like your code review template or your meeting transcript action item extractor  
+Daniel: [casual] And record what changed like did model B add extra prose when you asked for strict JSON did it ignore the schema did it comply but with different key names  
+Nina: [thoughtful] Or did it become overly cautious and ask too many clarifying questions when you needed a quick first draft  
+Daniel: [pause] And again you are not judging personality you are judging fit for purpose  
+Nina: [thoughtful] Let us get more specific about what to look for on each axis with examples you can literally paste today  
+Daniel: [casual] Instruction following example you say output valid JSON matching this schema keys must be exactly these types must match do not wrap in markdown  
+Nina: [thoughtful] And you include a schema like  
+Daniel: [casual] decision string alternatives array of strings rationale string next_steps array of objects with owner and task and due_date nullable string  
+Nina: [pause] Then you paste a paragraph of transcript and see if it produces valid JSON  
+Daniel: [thoughtful] A quick check is run it through a JSON validator or your language parser  
+Nina: [casual] Depth versus speed example you give it messy notes and you ask for a spec and you watch whether it asks one or two high value clarifying questions at the end instead of making things up  
+Daniel: [thoughtful] Like it might say open question do we need SSO or is email login fine and what is the retention period for exports  
+Nina: [pause] Versus hallucinating a retention policy you never stated  
+Daniel: [thoughtful] Tool use and code context example you provide a failing test output and two relevant files and ask for minimal diff and a regression test  
+Nina: [casual] The good behavior is it anchors on the failing assertion traces the code path and changes the smallest thing that fixes it and then locks it with a test  
+Daniel: [thoughtful] Bad behavior is it rewrites three files changes the API contract and then claims tests will pass  
+Nina: [pause] Safety robustness under ambiguity example you give an under specified prompt like design a payment system and see if it defaults to irresponsible specifics  
+Daniel: [thoughtful] A robust model will ask scope questions like region compliance chargebacks payment processor constraints rather than making up architecture diagrams with fake numbers  
+Nina: [casual] Now let us walk through the five bake off prompts a little more concretely with sample wording  
+Daniel: [thoughtful] Prompt a spec from messy notes could be something like these notes are from a rushed call build an internal tool for support to triage tickets must integrate with zendesk export csv weekly need audit log managers want dashboard by team some tickets contain PII we need role based access timeline four weeks  
+Nina: [casual] And then ask produce a one page spec include goals non goals workflow data model risks open questions and a phased plan for week one to four  
+Daniel: [pause] Then score it did it notice PII and audit log implications did it propose sensible roles did it keep to one page did it add open questions  
+Nina: [thoughtful] Prompt generate unit tests from a function signature example in Python def normalize_phone_number raw string default_country string returns e164 string raises ValueError on invalid  
+Daniel: [casual] Ask for pytest tests include edge cases like empty string letters extensions different country formats already normalized input  
+Nina: [pause] Score on correctness do tests match signature completeness edge cases formatting do they run time to useful how much did you edit  
+Daniel: [thoughtful] Prompt refactor code while preserving behavior you paste a function that is 80 lines long with nested conditionals and ask to refactor into helper functions keep same behavior and add tests  
+Nina: [casual] Score it by running tests if you can or by reasoning through behavior preservation if you cannot  
+Daniel: [pause] Prompt summarize and extract action items you paste a transcript and ask for summary decisions action items with owner due date and open questions  
+Nina: [thoughtful] Score it on whether action items are actually action items not vague intentions and whether it assigns owners only when stated  
+Daniel: [casual] Prompt structured output strict schema you give a JSON schema and ask for valid JSON only  
+Nina: [pause] Score it with a validator  
+Daniel: [thoughtful] Now we should talk about a subtlety if you are evaluating in chat versus in an IDE plugin the same model can behave differently  
+Nina: [casual] Yeah because the IDE plugin might auto provide file context and the chat might not  
+Daniel: [pause] So when you do bake offs keep the environment consistent or at least record the environment because otherwise you are measuring tooling not model  
+Nina: [thoughtful] Let us bring back that external signal we mentioned earlier in a way that stays grounded  
+Daniel: [casual] If you have reason to believe Opus 4.6 tends to do well on long context and agentic reliability then you would include at least one long context task in your bake off  
+Nina: [thoughtful] Like paste a long set of meeting notes plus emails plus a draft contract and ask for a risk register and negotiation points  
+Daniel: [pause] And if you have reason to believe gpt 5.3 codex tends to be strong at code generation speed and JSON friendly structure then you include at least one strict formatting and code diff task  
+Nina: [thoughtful] Like produce a unified diff patch only and update tests  
+Daniel: [casual] But you still score and you still measure because the point is not to repeat the blog post the point is to see what happens in your hands  
+Nina: [thoughtful] Let us talk about long context specifically because people misunderstand it  
+Daniel: [pause] Long context is not automatically better answers it is the ability to keep more source material present so the model does not have to guess  
+Nina: [casual] But you still need good retrieval like even with a million tokens if you dump a million tokens without structure you can get mush  
+Daniel: [thoughtful] A good test is give it a long doc and then ask targeted questions that require citing specific sections and preserving nuance  
+Nina: [casual] And then see if it confuses similar sections or merges them  
+Daniel: [pause] Now latency if one model is consistently slower but more thorough you decide if that trade is worth it  
+Nina: [thoughtful] For a planning doc maybe yes for tight code review loops maybe no  
+Daniel: [casual] This is why measuring average response time across ten runs is helpful because you are not anchored on a single slow moment  
+Nina: [thoughtful] Also track retries because retries are latency too  
+Daniel: [pause] Now I want to add one more metric that people can include if they want error rate under constraints  
+Nina: [casual] Like how often it violates the format request or invents missing details  
+Daniel: [thoughtful] You can count those as failures and your cost per successful task calculation becomes more honest  
+Nina: [pause] Now let us build a decision matrix because you should not have to re decide every day  
+Daniel: [casual] If your week is seventy percent code review tests refactors debugging then bias toward the coding optimized option  
+Nina: [thoughtful] Because those workflows reward structured output diff generation and tight iteration  
+Daniel: [pause] If your week is seventy percent writing strategy docs synthesis client comms then bias toward the general reasoning option  
+Nina: [thoughtful] Because the quality is in narrative coherence framing and integrating lots of context without losing thread  
+Daniel: [casual] If it is mixed keep both or standardize on one and accept tradeoffs  
+Nina: [pause] Keeping both can be rational if switching costs are low and you have clear triggers like for code diffs use codex for long memos use opus  
+Daniel: [thoughtful] But if switching costs are high you might standardize and then you compensate with better prompts or better tooling  
+Nina: [casual] That leads to a practical tip write down your triggers explicitly like if I need JSON schema compliance I start with model X if I need multi doc synthesis I start with model Y  
+Daniel: [pause] And then you still rerun your benchmark monthly because models update and your usage changes  
+Nina: [thoughtful] Monthly sounds frequent but it is a small set five prompts maybe ten minutes and it prevents you from living with last seasons assumptions  
+Daniel: [casual] And it can be as simple as a folder called model bake off with dated runs  
+Nina: [pause] Now let us talk about under specified prompts because this is where people get burned  
+Daniel: [thoughtful] If your prompt is vague like make this better you are not evaluating the model you are evaluating your own ambiguity tolerance  
+Nina: [casual] So for robustness under ambiguity you deliberately include one under specified prompt but you define what good looks like  
+Daniel: [pause] Good looks like asking clarifying questions proposing a default assumption set labeled as assumptions and giving a plan for next information needed  
+Nina: [thoughtful] Bad looks like giving you a full plan with fake numbers and no questions  
+Daniel: [casual] And again you score it time to useful because sometimes questions are useful sometimes they are friction  
+Nina: [pause] There is a nuance here I want to name some models ask too many questions as a style and that can be protective but it can slow execution  
+Daniel: [thoughtful] So your rubric should reward the minimum sufficient questions not maximal caution  
+Nina: [casual] Like ask the two questions that unblock not ten that postpone  
+Daniel: [pause] Now for the prompt portability test I want to give a concrete example because it is surprisingly sobering  
+Nina: [thoughtful] Suppose you have a prompt that says you are a senior engineer review this PR description produce a checklist of issues and output JSON with keys severity file suggestion  
+Daniel: [casual] It works great in model A and then you paste into model B unchanged and model B adds markdown commentary or changes key names like filePath instead of file and your parser breaks  
+Nina: [pause] That is not just annoying that means your workflow depends on a behavior that is not portable  
+Daniel: [thoughtful] The fix might be as simple as tightening the instruction like output only JSON no markdown and include an example output  
+Nina: [casual] And then you rerun in both models to see if you can make it portable  
+Nina: [pause] If you can make it portable you reduce switching costs  
+Daniel: [thoughtful] Which matters because procurement teams and platform teams love portability and individual users love not being locked in by habit  
+Nina: [casual] Let us do a quick walk through how to compute cost per successful task because people talk about cost abstractly  
+Daniel: [pause] For each prompt run you record tokens in tokens out and per token price for that model then multiply and get cost per run  
+Nina: [thoughtful] Then you mark whether the run was successful without major edits if it is not successful you either mark as failure or include the cost of retries and edits  
+Daniel: [casual] Then cost per successful task is total cost divided by number of successful runs  
+Nina: [pause] If model A is more expensive per run but succeeds first try it can be cheaper per success  
+Daniel: [thoughtful] And if model B is cheap but needs two retries it can be expensive per success  
+Nina: [casual] Now tie this back to the listener question opus 4.6 versus gpt 5.3 codex  
+Daniel: [thoughtful] The right answer is you should probably not pick one model for everything by default you should pick for your dominant workflows  
+Nina: [casual] If you are mostly in an IDE writing tests generating diffs navigating repos and you care about JSON friendly structure codex positioned models often feel smoother  
+Daniel: [pause] If you are mostly synthesizing lots of text writing memos planning projects and you need long context reliability a model known for long context can reduce rework  
+Nina: [thoughtful] But do not take even that as gospel run the bake off because your prompts your domain and your constraints change the outcome  
+Daniel: [casual] Another nuance your own skill matters if you are strong at editing prose you might prefer the faster structured model and just rewrite narrative yourself  
+Nina: [pause] And if you are strong at code you might use the general model for planning and then do the implementation manually  
+Daniel: [thoughtful] Right fit for purpose includes fit for your skill and tolerance for cleanup  
+Nina: [casual] Let us give one more concrete repo benchmark prompt people can copy because it is very real  
+Daniel: [thoughtful] Prompt you are given a TypeScript Express API the tests fail with 401 expected 200 for GET slash v1 slash reports the failing test output is pasted below along with routes ts and auth middleware ts identify likely bug propose minimal unified diff and add regression test in reports test ts  
+Nina: [pause] Then you paste the failure stack trace and the three files  
+Daniel: [thoughtful] You can run that in both models and score it by whether the diff is minimal and plausible and whether the new test asserts the bug  
+Nina: [casual] And if you cannot run code right then you can still score reasoning quality like did it follow the stack trace did it change the right conditional did it preserve security intent  
+Daniel: [pause] Because sometimes the right fix is not make everything public it is fix a header parsing issue  
+Nina: [thoughtful] Now for non coding one more prompt I love because it tests both synthesis and format  
+Daniel: [casual] Turn these bullet notes into a client memo one page include risks recommendation open questions and then output a separate decision log in JSON schema  
+Nina: [pause] That hybrid prompt stresses the model because it has to do prose and then strict structure  
+Daniel: [thoughtful] And you will learn quickly if a model can switch modes without bleeding prose into JSON  
+Nina: [casual] That is a real world skill because your workflow might require both  
+Daniel: [pause] Okay we should close with the grounded takeaway  
+Nina: [thoughtful] The best model is the one that reduces your rework not the one that wins a debate online  
+Daniel: [casual] Build a personal benchmark set five prompts is enough rerun monthly keep scores and notes on failure modes  
+Nina: [pause] Treat the decision as fit for purpose evaluate on instruction following depth versus speed tool and context handling and robustness under ambiguity  
+Daniel: [thoughtful] Measure cost latency and context window impact in your own environment and do prompt portability tests so you know how fragile your workflow is  
+Nina: [casual] And if your week is mostly code review tests and refactors bias toward the coding optimized option if your week is mostly writing strategy and synthesis bias toward the general reasoning option  
+Daniel: [pause] If it is mixed either keep both with clear triggers or pick one and accept the tradeoff deliberately  
+Nina: [thoughtful] That is the whole point deliberate instead of ideological  
+Daniel: [casual] And if you run this bake off and you learn something surprising keep that surprise because that is you getting closer to how you actually work  
+Nina: [pause] Send us your prompt set if you want we are always curious what people consider their five truths  
+Daniel: [thoughtful] We will be here next time still refusing the brand war and still trying to make your tools earn their keep

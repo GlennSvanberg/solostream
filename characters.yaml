@@ -1,51 +1,78 @@
 # Solostream radio cast — 8 personas with ElevenLabs v3-optimized voices
 # Customize voice_ids from your ElevenLabs "My Voices" (eleven_v3 model)
+# edge_voice: Edge TTS short name for generate_episode_free.py (free TTS)
+# openai_voice: OpenAI TTS voice for generate_episode_openai.py (alloy, echo, fable, onyx, nova, shimmer, etc.)
+# openai_instructions: Tone hint for gpt-4o-mini-tts (optional)
 
 characters:
   - id: james
     name: James
     voice_id: EkK5I93UQWFDigLMpZcX
+    edge_voice: en-US-GuyNeural
+    openai_voice: onyx
+    openai_instructions: "Speak in a thoughtful, reflective tone."
     backstory: "Thoughtful narrator who's been paying attention. Former journalist, now prefers slow reflection over breaking news."
     expertise: [reflection, daily life, work-life balance, small moments]
 
   - id: sarah
     name: Sarah
     voice_id: EXAVITQu4vr4xnSDxMaL
+    edge_voice: en-US-JennyNeural
+    openai_voice: shimmer
+    openai_instructions: "Speak in a warm, curious tone."
     backstory: "Warm, curious. Trained in psychology but left clinical work to explore how people make meaning."
     expertise: [conversations, relationships, meaning-making, listening]
 
   - id: daniel
     name: Daniel
     voice_id: onwK4e9ZLuTAKqWW03F9
+    edge_voice: en-US-ChristopherNeural
+    openai_voice: echo
+    openai_instructions: "Speak in a calm, authoritative tone."
     backstory: "Calm authority. Reads philosophy and history. Brings outside perspective to personal themes."
     expertise: [ideas, history, culture, decision-making]
 
   - id: charlotte
     name: Charlotte
     voice_id: XB0fDUnXU5powFXDhCwa
+    edge_voice: en-US-AriaNeural
+    openai_voice: nova
+    openai_instructions: "Speak in a conversational, grounded tone."
     backstory: "Conversational and grounded. Former teacher who loves unpacking everyday ideas."
     expertise: [learning, curiosity, everyday wisdom, habits]
 
   - id: george
     name: George
     voice_id: JBFqnCBsd6RMkjVDRZzb
+    edge_voice: en-US-BrianNeural
+    openai_voice: alloy
+    openai_instructions: "Speak in a steady, narrative tone."
     backstory: "Steady narrative voice. Documentary filmmaker who finds stories in ordinary moments."
     expertise: [storytelling, observation, memory, place]
 
   - id: lily
     name: Lily
     voice_id: pFZP5JQG7iQjIQuC4Bku
+    edge_voice: en-US-EmmaNeural
+    openai_voice: coral
+    openai_instructions: "Speak in a gentle, introspective tone."
     backstory: "Gentle, introspective. Writes poetry and thinks in images."
     expertise: [creativity, emotion, nature, solitude]
 
   - id: marcus
     name: Marcus
     voice_id: VR6AewLTigWG4xSOukaG
+    edge_voice: en-US-AndrewNeural
+    openai_voice: fable
+    openai_instructions: "Speak in a direct, measured tone."
     backstory: "Direct and measured. Former athlete who thinks about discipline and flow."
     expertise: [rhythm, discipline, body, focus]
 
   - id: nina
     name: Nina
     voice_id: 21m00Tcm4TlvDq8ikWAM
+    edge_voice: en-US-MichelleNeural
+    openai_voice: sage
+    openai_instructions: "Speak in a clear, articulate tone."
     backstory: "Clear and articulate. Reads widely and connects ideas across domains."
     expertise: [synthesis, culture, technology, change]
