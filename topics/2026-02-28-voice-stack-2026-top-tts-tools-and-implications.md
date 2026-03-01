@@ -1,5 +1,5 @@
 ---
-title: The voice stack in 2026: top TTS tools, what they enable, and what to watch for
+title: "The voice stack in 2026: top TTS tools, what they enable, and what to watch for"
 created: 2026-02-28
 status: researched
 episode_type: interview

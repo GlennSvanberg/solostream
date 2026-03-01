@@ -1,5 +1,5 @@
 ---
-title: From pilot to practice: enabling AI in a consultancy without breaking trust
+title: "From pilot to practice: enabling AI in a consultancy without breaking trust"
 created: 2026-02-28
 status: researched
 episode_type: discussion

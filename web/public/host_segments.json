@@ -1,0 +1,52 @@
+{
+  "segments": [
+    {
+      "id": "2026-02-28-voice-stack-2026-top-tts-tools-and-implications-intro",
+      "type": "host",
+      "episodeId": "2026-02-28-voice-stack-2026-top-tts-tools-and-implications",
+      "slot": "intro",
+      "url": "/host/2026-02-28-voice-stack-2026-top-tts-tools-and-implications-intro_postprocessed.mp3",
+      "script": "As we step into a future where voices command our devices, how will the latest TTS tools reshape our interactions and expectations? Join us as we explore the evolving soundscape of communication and what it means for our everyday lives."
+    },
+    {
+      "id": "2026-02-28-voice-stack-2026-top-tts-tools-and-implications-outro",
+      "type": "host",
+      "episodeId": "2026-02-28-voice-stack-2026-top-tts-tools-and-implications",
+      "slot": "outro",
+      "url": "/host/2026-02-28-voice-stack-2026-top-tts-tools-and-implications-outro_postprocessed.mp3",
+      "script": "As voice technology reshapes our interactions, it\u2019s clear that the way we communicate is evolving faster than we realize. Join us next time as we explore how these advancements are quietly redesigning our workspaces, making the voice our primary interface."
+    },
+    {
+      "id": "2026-02-28-voice-as-default-interface-quiet-redesign-of-work-intro",
+      "type": "host",
+      "episodeId": "2026-02-28-voice-as-default-interface-quiet-redesign-of-work",
+      "slot": "intro",
+      "url": "/host/2026-02-28-voice-as-default-interface-quiet-redesign-of-work-intro_postprocessed.mp3",
+      "script": "As the workplace evolves, are we ready to let our voices lead the way? Discover how voice technology is reshaping our daily routines and redefining collaboration, all while exploring what this means for productivity and creativity in your life."
+    },
+    {
+      "id": "2026-02-28-voice-as-default-interface-quiet-redesign-of-work-outro",
+      "type": "host",
+      "episodeId": "2026-02-28-voice-as-default-interface-quiet-redesign-of-work",
+      "slot": "outro",
+      "url": "/host/2026-02-28-voice-as-default-interface-quiet-redesign-of-work-outro_postprocessed.mp3",
+      "script": "As we reimagine work through voice, it\u2019s clear that how we interact with technology shapes our efficiency. Stay tuned as we explore the nuances of choosing the right AI tools in our next episode, \"Opus 4 6 Vs Gpt 5 3 Codex.\""
+    },
+    {
+      "id": "2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work-intro",
+      "type": "host",
+      "episodeId": "2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work",
+      "slot": "intro",
+      "url": "/host/2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work-intro_postprocessed.mp3",
+      "script": "As AI continues to reshape creativity, which tools truly elevate our work? Dive into the battle of Opus 4 6 versus GPT-5 3 Codex and discover how your choices can redefine what productivity means in our rapidly evolving landscape."
+    },
+    {
+      "id": "2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work-outro",
+      "type": "host",
+      "episodeId": "2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work",
+      "slot": "outro",
+      "url": "/host/2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work-outro_postprocessed.mp3",
+      "script": "Choosing the right AI tool can feel like navigating a sonic maze; each option shapes how we create. Join us next time as we explore the Voice Stack 2026 and unravel the latest in TTS tools and what they mean for our auditory experiences."
+    }
+  ]
+}

@@ -3,8 +3,13 @@
 # edge_voice: Edge TTS short name for generate_episode_free.py (free TTS)
 # openai_voice: OpenAI TTS voice for generate_episode_openai.py (alloy, echo, fable, onyx, nova, shimmer, etc.)
 # openai_instructions: Tone hint for gpt-4o-mini-tts (optional)
+# solostream_host: Radio host for generate_host_segments.py (intro/outro segments)
 
 characters:
+  - id: solostream_host
+    name: Host
+    openai_voice: onyx
+    openai_instructions: "Speak as a warm, thoughtful radio host. Brief, conversational, never stiff."
   - id: james
     name: James
     voice_id: EkK5I93UQWFDigLMpZcX

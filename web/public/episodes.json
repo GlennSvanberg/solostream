@@ -3,17 +3,30 @@
     {
       "id": "2026-02-28-voice-stack-2026-top-tts-tools-and-implications",
       "title": "Voice Stack 2026 Top Tts Tools And Implications",
-      "url": "/episodes/2026-02-28-voice-stack-2026-top-tts-tools-and-implications_postprocessed.mp3"
+      "url": "/episodes/2026-02-28-voice-stack-2026-top-tts-tools-and-implications_postprocessed.mp3",
+      "hosts": [
+        "Sarah"
+      ],
+      "guest": "Nina"
     },
     {
       "id": "2026-02-28-voice-as-default-interface-quiet-redesign-of-work",
       "title": "Voice As Default Interface Quiet Redesign Of Work",
-      "url": "/episodes/2026-02-28-voice-as-default-interface-quiet-redesign-of-work_postprocessed.mp3"
+      "url": "/episodes/2026-02-28-voice-as-default-interface-quiet-redesign-of-work_postprocessed.mp3",
+      "hosts": [
+        "James"
+      ],
+      "guest": null
     },
     {
       "id": "2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work",
       "title": "Opus 4 6 Vs Gpt 5 3 Codex Choosing By Work",
-      "url": "/episodes/2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work_postprocessed.mp3"
+      "url": "/episodes/2026-02-28-opus-4-6-vs-gpt-5-3-codex-choosing-by-work_postprocessed.mp3",
+      "hosts": [
+        "Nina",
+        "Daniel"
+      ],
+      "guest": null
     }
   ]
 }

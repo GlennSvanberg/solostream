@@ -1,5 +1,5 @@
 ---
-title: Opus 4.6 vs GPT‑5.3‑Codex: choosing a model by the work, not the hype
+title: "Opus 4.6 vs GPT‑5.3‑Codex: choosing a model by the work, not the hype"
 created: 2026-02-28
 status: researched
 episode_type: discussion

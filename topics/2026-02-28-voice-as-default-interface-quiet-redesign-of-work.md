@@ -1,5 +1,5 @@
 ---
-title: The quiet redesign of work: what changes when voice becomes the default interface
+title: "The quiet redesign of work: what changes when voice becomes the default interface"
 created: 2026-02-28
 status: researched
 episode_type: short

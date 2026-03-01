@@ -1,0 +1,16 @@
+{
+  "tracks": [
+    {
+      "id": "calm-001",
+      "url": "/music/calm-001.mp3",
+      "mood": "calm",
+      "duration": 30
+    },
+    {
+      "id": "ambient-001",
+      "url": "/music/ambient-001.mp3",
+      "mood": "ambient",
+      "duration": 30
+    }
+  ]
+}
